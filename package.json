@@ -18,7 +18,7 @@
     "npm i",
     "concurrent"
   ],
-  "author": "itay avra",
+  "author": "Itay Avraham",
   "license": "Apache-2.0",
   "dependencies": {
     "minimist": "^1.2.6",
