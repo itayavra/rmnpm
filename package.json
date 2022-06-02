@@ -1,6 +1,6 @@
 {
   "name": "@itayavra/rmnpm",
-  "version": "1.0.14",
+  "version": "1.0.16",
   "description": "A cool tool that saves you time if you want to remove your node_modules folder before running the 'npm install' command.",
   "main": "index.js",
   "bin": "index.js",
@@ -18,12 +18,13 @@
     "npm i",
     "concurrent"
   ],
-  "author": "Itay Avraham    ",
+  "author": "Itay Avraham",
   "license": "Apache-2.0",
   "dependencies": {
     "minimist": "^1.2.6",
     "node-localstorage": "^2.2.1",
-    "pretty-ms": "^7.0.1"
+    "pretty-ms": "^7.0.1",
+    "simple-git": "^3.7.1"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.33.4",

@@ -26,7 +26,7 @@ npx @itayavra/rmnpm
 
 
 ### Additional arguments
-* `[-p | --pull]` - will run the `git pull --rebase` command before reinstalling all the packages
+* `[-p | --pull]` - will update the code before reinstalling all the packages
 * `[-rl | --remove-lock-file]` - removes package-lock.json if exists
 * `--use-lock-file` - uses an existing package-lock.js (running `npm ci --prefer-offline` instead of the `npm i` command)
 * `--clear-cache` - resets the ‘Total time saved’ data

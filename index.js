@@ -69,22 +69,6 @@ function asyncNpmInstall() {
   });
 }
 
-function gitPull() {
-  log('git pull --rebase started.');
-  const child = spawnSync('git', ['pull', '--rebase'], {
-    stdio: ['inherit', 'inherit', 'pipe'],
-  });
-
-  if (child.stderr) {
-    console.log(child.stderr.toString());
-    log('Failed to git pull --rebase.');
-    return Promise.reject();
-  }
-
-  log('git pull --rebase finished.');
-  return Promise.resolve();
-}
-
 function removePackageLock() {
   if (fs.existsSync('package-lock.json')) {
     log('Removing package-lock.json.');
@@ -123,8 +107,14 @@ async function run() {
 
   if (argv['pull'] || argv['p']) {
     try {
-      await gitPull();
-    } catch {
+      const simpleGit = require('simple-git');
+      const git = simpleGit();
+      log('Updating code.');
+      await git.pull(['--rebase=false']);
+      log('Code updated.');
+    } catch (e) {
+      console.log(e.message);
+      log('Failed to update code.');
       return;
     }
   }
