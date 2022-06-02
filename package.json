@@ -19,7 +19,7 @@
     "concurrent"
   ],
   "author": "itayavra",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "dependencies": {
     "minimist": "^1.2.6",
     "node-localstorage": "^2.2.1",
