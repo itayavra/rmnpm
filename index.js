@@ -71,8 +71,18 @@ function asyncNpmInstall() {
 
 function gitPull() {
   log('git pull --rebase started.');
-  spawnSync('git', ['pull', '--rebase'], { stdio: 'inherit' });
+  const child = spawnSync('git', ['pull', '--rebase'], {
+    stdio: ['inherit', 'inherit', 'pipe'],
+  });
+
+  if (child.stderr) {
+    console.log(child.stderr.toString());
+    log('Failed to git pull --rebase.');
+    return Promise.reject();
+  }
+
   log('git pull --rebase finished.');
+  return Promise.resolve();
 }
 
 function removePackageLock() {
@@ -94,18 +104,29 @@ function log(text, ...args) {
 }
 
 async function run() {
-  log('Started.');
-
-  const startTime = new Date();
   const storage = new LocalStorage(storagePath);
 
   if (argv['clear-cache']) {
     await storage.clear();
+    log('Cache cleared, exiting.');
     return;
   }
 
+  if (argv['v'] || argv['version']) {
+    const { version } = require('./package.json');
+    console.log(version);
+    return;
+  }
+
+  log('Started.');
+  const startTime = new Date();
+
   if (argv['pull'] || argv['p']) {
-    gitPull();
+    try {
+      await gitPull();
+    } catch {
+      return;
+    }
   }
 
   let removeNodeModulesPromise;
