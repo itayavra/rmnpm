@@ -1,9 +1,13 @@
 {
   "name": "@itayavra/rmnpm",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "",
   "main": "index.js",
   "bin": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/itayavra/rmnpm.git"
+  },
   "scripts": {
     "build": "ncc build index.js -m -o dist"
   },
