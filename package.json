@@ -1,0 +1,31 @@
+{
+  "name": "@itayavra/rmnpm",
+  "version": "1.0.11",
+  "description": "",
+  "main": "index.js",
+  "bin": "index.js",
+  "scripts": {
+    "build": "ncc build index.js -m -o dist"
+  },
+  "keywords": [
+    "node_modules",
+    "rm -rf node_modules",
+    "npm install",
+    "npm i",
+    "concurrent"
+  ],
+  "author": "itayavra",
+  "license": "ISC",
+  "dependencies": {
+    "minimist": "^1.2.6",
+    "node-localstorage": "^2.2.1",
+    "pretty-ms": "^7.0.1"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.33.4",
+    "prettier": "2.6.2"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  }
+}
