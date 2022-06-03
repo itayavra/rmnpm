@@ -6,7 +6,29 @@ const path = require('path');
 
 const homedir = os.homedir();
 const prettyMilliseconds = require('pretty-ms');
-const argv = require('minimist')(process.argv.slice(2));
+
+const argv = require('yargs/yargs')(process.argv.slice(2))
+  .usage('Usage: $0 [options]')
+  .example(
+    '$0 -p -r',
+    'Update the code and remove the lock file before reinstalling all the packages'
+  )
+  .alias('p', 'pull')
+  .describe('p', 'Updates the code')
+  .alias('r', 'remove-lock-file')
+  .describe('r', 'Removes the package-lock.json file if exists')
+  .alias('l', 'use-lock-file')
+  .describe(
+    'l',
+    'Uses a lock file, runs npm ci --prefer-offline instead of npm i'
+  )
+  .alias('q', 'quiet')
+  .describe('q', 'Runs without rmnpm logs (will still show the logs from the commands that run)')
+  .describe('clear-cache', 'Clears the ‘Total time saved’ data')
+  .help('h')
+  .alias('h', 'help')
+  .alias('v', 'version')
+  .wrap(null).argv;
 
 const { LocalStorage } = require('node-localstorage');
 const tempNodeModulesPath = path.join(
@@ -42,7 +64,7 @@ function asyncRemoveNodeModules(folderName) {
         return;
       }
 
-      log(`${folderName} is removed.`);
+      log(`${folderName} removed.`);
       const elapsedTimeMs = new Date() - startTime;
       resolve(elapsedTimeMs);
     });
@@ -96,16 +118,10 @@ async function run() {
     return;
   }
 
-  if (argv['v'] || argv['version']) {
-    const { version } = require('./package.json');
-    console.log(version);
-    return;
-  }
-
   log('Started.');
   const startTime = new Date();
 
-  if (argv['pull'] || argv['p']) {
+  if (argv['pull']) {
     try {
       const simpleGit = require('simple-git');
       const git = simpleGit();
@@ -127,7 +143,7 @@ async function run() {
     log(`${nodeModules} does'nt exist.`);
   }
 
-  if ((argv['r'] && argv['l']) || argv['rl'] || argv['remove-lock-file']) {
+  if (argv['remove-lock-file']) {
     removePackageLock();
   }
 
