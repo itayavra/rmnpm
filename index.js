@@ -14,17 +14,17 @@ const argv = require('yargs/yargs')(process.argv.slice(2))
     'Update the code and remove the lock file before reinstalling all the packages'
   )
   .alias('p', 'pull')
-  .describe('p', 'Updates the code')
+  .describe('p', 'Update the code')
   .alias('r', 'remove-lock-file')
-  .describe('r', 'Removes the package-lock.json file if exists')
+  .describe('r', 'Remove the package-lock.json file if exists')
   .alias('l', 'use-lock-file')
   .describe(
     'l',
-    'Uses a lock file, runs npm ci --prefer-offline instead of npm i'
+    'Use a lock file, runs npm ci --prefer-offline instead of npm i'
   )
   .alias('q', 'quiet')
-  .describe('q', 'Runs without rmnpm logs (will still show the logs from the commands that run)')
-  .describe('clear-cache', 'Clears the ‘Total time saved’ data')
+  .describe('q', 'Run without rmnpm logs (will still show the logs from the commands that run)')
+  .describe('clear-cache', 'Clear the ‘Total time saved’ data')
   .help('h')
   .alias('h', 'help')
   .alias('v', 'version')
