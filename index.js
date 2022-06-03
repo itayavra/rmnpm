@@ -23,7 +23,7 @@ const argv = require('yargs/yargs')(process.argv.slice(2))
     'Use a lock file, runs npm ci --prefer-offline instead of npm i'
   )
   .alias('q', 'quiet')
-  .describe('q', 'Run without rmnpm logs (will still show the logs from the commands that run)')
+  .describe('q', 'Run without rmnpm logs (will still show the output of the commands it runs)')
   .describe('clear-cache', 'Clear the ‘Total time saved’ data')
   .help('h')
   .alias('h', 'help')
