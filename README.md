@@ -27,13 +27,12 @@ npx @itayavra/rmnpm
 
 ### Additional arguments
 * `[-p | --pull]` - will update the code before reinstalling all the packages
-* `[-rl | --remove-lock-file]` - removes package-lock.json if exists
-* `--use-lock-file` - uses an existing package-lock.js (running `npm ci --prefer-offline` instead of the `npm i` command)
-* `--clear-cache` - resets the ‘Total time saved’ data
-* `--quiet` - runs without showing any rmnpm logs (will still show the logs from the commands that run)
-
+* `[-r | --remove-lock-file]` - removes package-lock.json if exists
+* `[-l | --use-lock-file]` - runs npm ci --prefer-offline instead of npm i
+* `[-q | --quiet]` - not adding any rmnpm logs (will still show the logs from the commands it runs)
+* `--clear-cache` - clears the ‘Total time saved’ data
 
 ### Example usage
 ```
-rmnpm -p -rl
+rmnpm -p -r
 ```
