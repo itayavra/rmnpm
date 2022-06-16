@@ -42,7 +42,8 @@ function asyncRemoveNodeModules(folderName) {
   return new Promise((resolve, reject) => {
     fs.rmdir(folderName, { recursive: true }, (err) => {
       if (err) {
-        log(error(`Failed to remove ${folderName}.`), err);
+        console.log(err);
+        log(error(`Failed to remove ${folderName}.`));
         reject(err);
         return;
       }
@@ -70,7 +71,7 @@ function asyncNpmInstall() {
         log(`${npmInstallText} finished.`);
         resolve(elapsedTimeMs);
       } else {
-        reject(error(`${npmInstallText} failed with error code: `) + code);
+        reject(error(`${npmInstallText} failed with error code: ${code}`));
       }
     });
   });
@@ -136,15 +137,22 @@ async function run() {
 
   const npmInstallPromise = asyncNpmInstall();
 
-  const [removeNodeModulesTimeMs, npmInstallTimeMs] = await Promise.all([
+  const [removeNodeModulesResult, npmInstallResult] = await Promise.allSettled([
     removeNodeModulesPromise,
     npmInstallPromise,
   ]);
 
+  if (npmInstallResult.status === 'rejected') {
+    log(npmInstallResult.reason);
+    return;
+  }
+
+  const removeNodeModulesTimeMs = removeNodeModulesResult.value || 0;
+  const npmInstallTimeMs = npmInstallResult.value;
+
   const totalTimeMs = new Date() - startTime;
-  const timeSavedMs = Math.min(removeNodeModulesTimeMs || 0, npmInstallTimeMs);
-  const previousTotalTimeSavedMs =
-    parseInt(await storage.getItem('rmnpm.totalTimeSavedMs')) || 0;
+  const timeSavedMs = Math.min(removeNodeModulesTimeMs, npmInstallTimeMs);
+  const previousTotalTimeSavedMs = parseInt(await storage.getItem('rmnpm.totalTimeSavedMs')) || 0;
 
   const newTotalTimeSavedMs = previousTotalTimeSavedMs + timeSavedMs;
   await storage.setItem('rmnpm.totalTimeSavedMs', newTotalTimeSavedMs);
@@ -155,9 +163,7 @@ async function run() {
     return;
   }
 
-  const boldTotalTimeSavedText = bold(
-    `(${prettyMilliseconds(newTotalTimeSavedMs)} in total)`
-  );
+  const boldTotalTimeSavedText = bold(`(${prettyMilliseconds(newTotalTimeSavedMs)} in total)`);
 
   log(
     `You've just saved ${highlight.bold(
