@@ -5,7 +5,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const prettyMilliseconds = require('pretty-ms');
-const { blue, bold, green } = require('chalk');
+const { cyan, bold, green } = require('chalk');
 
 const homedir = os.homedir();
 const argv = require('./argvHelper').getArgv();
@@ -93,7 +93,7 @@ function log(text, ...args) {
     return;
   }
 
-  const date = blue(`${new Date()}:`);
+  const date = cyan(`${new Date()}:`);
   console.log(`${date} ${text}`, ...args);
 }
 
