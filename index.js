@@ -1,34 +1,14 @@
 #! /usr/bin/env node
-const { spawn, spawnSync } = require('child_process');
+
+const { spawn } = require('child_process');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const prettyMilliseconds = require('pretty-ms');
+const { blue, bold, green } = require('chalk');
 
 const homedir = os.homedir();
-const prettyMilliseconds = require('pretty-ms');
-
-const argv = require('yargs/yargs')(process.argv.slice(2))
-  .usage('Usage: $0 [options]')
-  .example(
-    '$0 -p -r',
-    'Update the code and remove the lock file before reinstalling all the packages'
-  )
-  .alias('p', 'pull')
-  .describe('p', 'Update the code')
-  .alias('r', 'remove-lock-file')
-  .describe('r', 'Remove the package-lock.json file if exists')
-  .alias('l', 'use-lock-file')
-  .describe(
-    'l',
-    'Use a lock file, runs npm ci --prefer-offline instead of npm i'
-  )
-  .alias('q', 'quiet')
-  .describe('q', 'Run without rmnpm logs (will still show the output of the commands it runs)')
-  .describe('clear-cache', 'Clear the ‘Total time saved’ data')
-  .help('h')
-  .alias('h', 'help')
-  .alias('v', 'version')
-  .wrap(null).argv;
+const argv = require('./argvHelper').getArgv();
 
 const { LocalStorage } = require('node-localstorage');
 const tempNodeModulesPath = path.join(
@@ -38,33 +18,36 @@ const tempNodeModulesPath = path.join(
 const nodeModules = 'node_modules';
 const storagePath = path.resolve(homedir, '.rmnpm');
 
+const highlight = green;
+const error = bold.red;
+
 function moveNodeModules(destPath) {
-  log(`Moving ${nodeModules} to ${destPath}.`);
+  log(`Moving ${nodeModules} to ${highlight(destPath)}.`);
   try {
     fs.renameSync(`./${nodeModules}`, destPath);
-    log(`${nodeModules} successfully moved to ${destPath}.`);
+    log(`${nodeModules} successfully moved to ${highlight(destPath)}.`);
   } catch (e) {
-    log(`Failed to move ${nodeModules} to ${destPath}.`, e);
+    log(error(`Failed to move ${nodeModules} to ${destPath}.`), e);
   }
 }
 
 function asyncRemoveNodeModules(folderName) {
   if (!fs.existsSync(folderName)) {
-    log(`${folderName} doesn't exist.`);
+    log(`${highlight(folderName)} doesn't exist.`);
     return Promise.resolve(0);
   }
 
-  log(`Starting to remove ${folderName}.`);
+  log(`Starting to remove ${highlight(folderName)}.`);
   const startTime = new Date();
   return new Promise((resolve, reject) => {
     fs.rmdir(folderName, { recursive: true }, (err) => {
       if (err) {
-        log(`Failed to remove ${folderName}.`, err);
+        log(error(`Failed to remove ${folderName}.`), err);
         reject(err);
         return;
       }
 
-      log(`${folderName} removed.`);
+      log(`${highlight(folderName)} removed.`);
       const elapsedTimeMs = new Date() - startTime;
       resolve(elapsedTimeMs);
     });
@@ -73,7 +56,9 @@ function asyncRemoveNodeModules(folderName) {
 
 function asyncNpmInstall() {
   const startTime = new Date();
-  log('npm install started.');
+  const npmInstallText = 'npm install';
+
+  log(`${npmInstallText} started.`);
   const npmArgs = argv['use-lock-file'] ? ['ci', '--prefer-offline'] : ['i'];
   const child = spawn('npm', npmArgs, { stdio: 'inherit' });
 
@@ -82,22 +67,23 @@ function asyncNpmInstall() {
     child.on('close', (code) => {
       if (code === 0) {
         const elapsedTimeMs = new Date() - startTime;
-        log('Finished npm install.');
+        log(`${npmInstallText} finished.`);
         resolve(elapsedTimeMs);
       } else {
-        reject('npm install failed with error code: ' + code);
+        reject(error(`${npmInstallText} failed with error code: `) + code);
       }
     });
   });
 }
 
 function removePackageLock() {
+  const packageLockFileText = 'package-lock.json';
   if (fs.existsSync('package-lock.json')) {
-    log('Removing package-lock.json.');
+    log(`Removing ${packageLockFileText}.`);
     fs.unlinkSync('package-lock.json');
-    log('package-lock.json is removed.');
+    log(`${packageLockFileText} is removed.`);
   } else {
-    log('No package-lock.json file.');
+    log(`No ${packageLockFileText} file.`);
   }
 }
 
@@ -106,7 +92,8 @@ function log(text, ...args) {
     return;
   }
 
-  console.log(`${new Date()}: ${text}`, ...args);
+  const date = blue(`${new Date()}:`);
+  console.log(`${date} ${text}`, ...args);
 }
 
 async function run() {
@@ -130,7 +117,7 @@ async function run() {
       log('Code updated.');
     } catch (e) {
       console.log(e.message);
-      log('Failed to update code.');
+      log(error('Failed to update code.'));
       return;
     }
   }
@@ -162,16 +149,20 @@ async function run() {
   const newTotalTimeSavedMs = previousTotalTimeSavedMs + timeSavedMs;
   await storage.setItem('rmnpm.totalTimeSavedMs', newTotalTimeSavedMs);
 
-  log(`Total time ${prettyMilliseconds(totalTimeMs)}.`);
+  log(`Total time ${highlight.bold(prettyMilliseconds(totalTimeMs))}.`);
 
   if (!timeSavedMs) {
     return;
   }
 
+  const boldTotalTimeSavedText = bold(
+    `(${prettyMilliseconds(newTotalTimeSavedMs)} in total)`
+  );
+
   log(
-    `You've just saved ${prettyMilliseconds(timeSavedMs)} (${prettyMilliseconds(
-      newTotalTimeSavedMs
-    )} in total).`
+    `You've just saved ${highlight.bold(
+      prettyMilliseconds(timeSavedMs)
+    )} ${boldTotalTimeSavedText}.`
   );
 }
 
