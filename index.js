@@ -129,13 +129,20 @@ async function run() {
     removeNodeModulesPromise = asyncRemoveNodeModules(tempNodeModulesPath);
   } else {
     log(`${nodeModules} does'nt exist.`);
+    removeNodeModulesPromise = Promise.resolve();
   }
 
   if (argv['remove-lock-file']) {
     removePackageLock();
   }
 
-  const npmInstallPromise = asyncNpmInstall();
+  let npmInstallPromise;
+  if (argv['skip-install']) {
+    log('Skipping npm install');
+    npmInstallPromise = Promise.resolve();
+  } else {
+    npmInstallPromise = asyncNpmInstall();
+  }
 
   const [removeNodeModulesResult, npmInstallResult] = await Promise.allSettled([
     removeNodeModulesPromise,

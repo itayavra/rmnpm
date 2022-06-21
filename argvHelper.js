@@ -8,13 +8,18 @@ const getArgv = () => {
       'Update the code and remove the lock file before reinstalling all the packages'
     )
     .alias('p', 'pull')
-    .describe('p', 'Update the code')
+    .describe('p', 'Update the code before reinstalling all the packages')
     .alias('r', 'remove-lock-file')
     .describe('r', 'Remove the package-lock.json file if exists')
     .alias('l', 'use-lock-file')
     .describe(
       'l',
       'Use a lock file, runs npm ci --prefer-offline instead of npm i'
+    )
+    .alias('s', 'skip-install')
+    .describe(
+      's',
+      'Remove the node_modules folder but skip running npm i'
     )
     .alias('q', 'quiet')
     .describe(
