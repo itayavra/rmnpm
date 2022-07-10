@@ -60,7 +60,11 @@ function asyncNpmInstall() {
   const npmInstallText = 'npm install';
 
   log(`${npmInstallText} started.`);
-  const npmArgs = argv['use-lock-file'] ? ['ci', '--prefer-offline'] : ['i'];
+  let npmArgs = argv['use-lock-file'] ? ['ci', '--prefer-offline'] : ['i'];
+  if (argv['_']) {
+    npmArgs = [...npmArgs, ...argv['_']];
+  }
+
   const child = spawn('npm', npmArgs, { stdio: 'inherit' });
 
   return new Promise((resolve, reject) => {
