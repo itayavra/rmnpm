@@ -179,9 +179,14 @@ async function run() {
       prettyMilliseconds(timeSavedMs)
     )} ${boldTotalTimeSavedText}.`
   );
+
+  return { timeSavedMs, totalTimeSavedMs: newTotalTimeSavedMs };
 }
 
 module.exports = {
   run,
   log,
+  highlight,
+  error,
+  storagePath,
 };
