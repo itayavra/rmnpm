@@ -4,6 +4,7 @@ const os = require('os');
 const path = require('path');
 const prettyMilliseconds = require('pretty-ms');
 const { cyan, bold, green } = require('chalk');
+const dateFormat = require('dateformat');
 
 const homedir = os.homedir();
 const argv = require('./argvHelper').getArgv();
@@ -95,7 +96,7 @@ function log(text, ...args) {
     return;
   }
 
-  const date = cyan(`${new Date()}:`);
+  const date = cyan(`${dateFormat(new Date())}:`);
   console.log(`${date} ${text}`, ...args);
 }
 
