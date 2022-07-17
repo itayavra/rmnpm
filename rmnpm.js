@@ -161,25 +161,19 @@ async function run() {
   const npmInstallTimeMs = npmInstallResult.value;
 
   const totalTimeMs = new Date() - startTime;
+  log(`Finished in ${bold(prettyMilliseconds(totalTimeMs))}.`);
+
   const timeSavedMs = Math.min(removeNodeModulesTimeMs, npmInstallTimeMs);
-  const previousTotalTimeSavedMs = parseInt(await storage.getItem('rmnpm.totalTimeSavedMs')) || 0;
-
-  const newTotalTimeSavedMs = previousTotalTimeSavedMs + timeSavedMs;
-  await storage.setItem('rmnpm.totalTimeSavedMs', newTotalTimeSavedMs);
-
-  log(`Total time ${highlight.bold(prettyMilliseconds(totalTimeMs))}.`);
-
   if (!timeSavedMs) {
     return;
   }
 
-  const boldTotalTimeSavedText = bold(`(${prettyMilliseconds(newTotalTimeSavedMs)} in total)`);
+  const previousTotalTimeSavedMs = parseInt(await storage.getItem('rmnpm.totalTimeSavedMs')) || 0;
+  const newTotalTimeSavedMs = previousTotalTimeSavedMs + timeSavedMs;
+  await storage.setItem('rmnpm.totalTimeSavedMs', newTotalTimeSavedMs);
 
-  log(
-    `You've just saved ${highlight.bold(
-      prettyMilliseconds(timeSavedMs)
-    )} ${boldTotalTimeSavedText}.`
-  );
+  const timeSavedText = `You've just saved ${highlight.bold(prettyMilliseconds(timeSavedMs))}`;
+  log(`${timeSavedText}, and ${highlight.bold(prettyMilliseconds(newTotalTimeSavedMs))} in total.`);
 
   return { timeSavedMs, totalTimeSavedMs: newTotalTimeSavedMs };
 }
