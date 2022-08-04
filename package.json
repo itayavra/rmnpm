@@ -9,7 +9,10 @@
     "url": "git://github.com/itayavra/rmnpm.git"
   },
   "scripts": {
-    "build": "ncc build index.js -m -o dist"
+    "build": "ncc build index.js -m -o dist",
+    "format": "prettier --write \"**/*.js\"",
+    "preversion" : "npm run format && git add -A src",
+    "postversion" : "git push && git push --tags"
   },
   "keywords": [
     "node_modules",

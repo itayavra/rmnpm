@@ -2,6 +2,7 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const util = require('util');
 const prettyMilliseconds = require('pretty-ms');
 const { cyan, bold, green } = require('chalk');
 const dateFormat = require('dateformat');
@@ -146,6 +147,13 @@ async function run() {
   } else {
     npmInstallPromise = asyncNpmInstall();
   }
+
+  npmInstallPromise.then((res) => {
+    if (util.inspect(removeNodeModulesPromise).includes('pending')) {
+      log(`Waiting to finish removing ${highlight(tempNodeModulesPath)}.`);
+    }
+    return res;
+  });
 
   const [removeNodeModulesResult, npmInstallResult] = await Promise.allSettled([
     removeNodeModulesPromise,

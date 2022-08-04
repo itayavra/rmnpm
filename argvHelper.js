@@ -12,20 +12,11 @@ const getArgv = () => {
     .alias('r', 'remove-lock-file')
     .describe('r', 'Remove the package-lock.json file if exists')
     .alias('l', 'use-lock-file')
-    .describe(
-      'l',
-      'Use a lock file, runs npm ci --prefer-offline instead of npm i'
-    )
+    .describe('l', 'Use a lock file, runs npm ci --prefer-offline instead of npm i')
     .alias('s', 'skip-install')
-    .describe(
-      's',
-      'Remove the node_modules folder but skip running npm i'
-    )
+    .describe('s', 'Remove the node_modules folder but skip running npm i')
     .alias('q', 'quiet')
-    .describe(
-      'q',
-      'Run without rmnpm logs (will still show the output of the commands it runs)'
-    )
+    .describe('q', 'Run without rmnpm logs (will still show the output of the commands it runs)')
     .describe('clear-cache', 'Clear the ‘Total time saved’ data')
     .help('h')
     .alias('h', 'help')
