@@ -1,6 +1,6 @@
 {
   "name": "@itayavra/rmnpm",
-  "version": "1.0.36",
+  "version": "1.0.37",
   "description": "A cool tool that saves you time if you want to remove your node_modules folder before running the 'npm install' command.",
   "main": "rmnpm.js",
   "bin": "index.js",
