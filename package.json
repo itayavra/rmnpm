@@ -11,7 +11,7 @@
   "scripts": {
     "build": "ncc build index.js -m -o dist",
     "format": "prettier --write \"**/*.js\"",
-    "preversion" : "npm run format && git add -A src",
+    "preversion" : "npm run format && git add -A .",
     "postversion" : "git push && git push --tags"
   },
   "keywords": [
